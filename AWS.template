@@ -1,0 +1,61 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "AWS CloudFormation Template EC2InstanceWithSecurityGroupSample: Create an Amazon EC2 instance running the Amazon Linux AMI plus security group in a region specified ",
+
+  "Parameters" : {
+	"VpcId" : {
+		"Type" : "String",
+		"Description" : "VpcId of your existing Virtual Private Cloud (VPC)"
+			}
+				},
+
+  "Resources" : {
+    "Web1" : {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "InstanceType" :  "t2.micro",
+		"SubnetId" : {"Ref" : "PublicSubnet1"},
+        "KeyName" :  "Blue-Key" ,
+        "ImageId" : "ami-4836a428",
+		"Tags" : [ 
+					{ 
+					"Key" : "Name",
+					"Value" : "Web1"
+		            }
+									
+				] 
+		             }
+                    },
+
+	"PublicSubnet1" : {
+		"Type" : "AWS::EC2::Subnet",
+		"Properties" : {
+		"CidrBlock" : "192.168.0.0/24",
+		"VpcId" : { "Ref" : "VpcId" }
+  }
+},
+
+	"webSecurityGroup" :{
+		"Type" : "AWS::EC2::SecurityGroup",
+		"Properties" : {
+			"GroupDescription" : "Enable HTTP and SSH",
+			"VpcId" : {"Ref" : "VpcId"},
+			"SecurityGroupIngress" :  [
+			{
+				"IpProtocol" : "tcp",
+				"FromPort" : "80",
+				"ToPort" : "80",
+				"CidrIp" : "0.0.0.0/0"
+			},
+			{
+				"IpProtocol" : "tcp",
+				"FromPort" : "22",
+				"ToPort" : "22",
+				"CidrIp" : "0.0.0.0/0"				
+			}
+						]
+	                 }
+              }
+	}
+}
